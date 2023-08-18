@@ -38,7 +38,7 @@ const server = http.createServer((req, res) => {
     console.log(url.parse(req.url, true));
 
     // const pathName = req.url;
-    
+
     // Home Page
     if(pathName === '/' || pathName === '/overview') {
         res.writeHead(200, {
@@ -56,8 +56,18 @@ const server = http.createServer((req, res) => {
 
     // Overview Page
     }
-    else if(pathName === '/product') {
-        res.end('Product Page');
+    else if(pathName === '/products') {
+        const product = dataObj[query.id];
+        // console.log(product);
+
+        const output = replaceTemplate(tempProduct, product);
+        // console.log(output);
+
+        res.writeHead(200, {
+            'Content-type': 'text/html'
+        })
+        res.end(output);
+        
      // Error Page
     } else {
         res.end('404 Not Found!')
