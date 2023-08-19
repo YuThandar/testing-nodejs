@@ -1,22 +1,15 @@
+// Core Module
 const fs = require('fs');
 const http = require('http');
 const url = require('url');
 
-// Replace Function
-const replaceTemplate = (temp, product) => {
-    let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
-    output = output.replace(/{%IMAGE%}/g, product.image);
-    output = output.replace(/{%PRICE%}/g, product.price);
-    output = output.replace(/{%FROM%}/g, product.from);
-    output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
-    output = output.replace(/{%QUANTITY%}/g, product.quantity);
-    output = output.replace(/{%DESCRIPTION%}/g, product.description);
-    output = output.replace(/{%ID%}/g, product.id);
+// Third Party Module
+const slugify = require('slugify');
+// console.log(slugify('Fresh Avocado', {lower:true}));
 
-    if(!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not_organic');
+// Own Module (Read The Template)
+const replaceTemplate = require('./module_js/replaceTemplate');
 
-    return output;
-}
 
 // Read Template (only one time calling the template file so using synchronous )
 const tempOverview = fs.readFileSync(`${__dirname}/templates/template_overview.html`, 'utf-8');
@@ -27,6 +20,9 @@ const tempCard = fs.readFileSync(`${__dirname}/templates/template_card.html`, 'u
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data);
 // console.log(dataObj);
+
+const slug = dataObj.map(el => slugify(el.productName),{lower: true});
+console.log(slug);
 
 // Create Server
 const server = http.createServer((req, res) => {
